@@ -3,6 +3,8 @@ package com.medisphere.service;
 import com.medisphere.dto.LoginRequest;
 import com.medisphere.dto.LoginResponse;
 import com.medisphere.entity.User;
+import com.medisphere.exception.InvalidCredentialsException;
+import com.medisphere.exception.ResourceNotFoundException;
 import com.medisphere.repository.UserRepository;
 import com.medisphere.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,11 @@ public class UserService {
     public LoginResponse login(LoginRequest request) {
 
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("Invalid Username"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid Password");
+            throw new InvalidCredentialsException("Invalid password");
         }
 
         String token = jwtService.generateToken(user.getUsername());

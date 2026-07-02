@@ -29,29 +29,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Skip authentication endpoints
-        if (request.getServletPath().startsWith("/auth")) {
+        // Skip only login endpoint
+        if (request.getServletPath().equals("/auth/login")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String username;
 
-        // Check Authorization header
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Extract JWT token
-        jwt = authHeader.substring(7);
+        String jwt = authHeader.substring(7);
 
-        // Extract username from token
-        username = jwtService.extractUsername(jwt);
+        String username = jwtService.extractUsername(jwt);
 
-        // Authenticate only if not already authenticated
         if (username != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -64,13 +58,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
-                                userDetails.getAuthorities()
-                        );
+                                userDetails.getAuthorities());
 
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource()
-                                .buildDetails(request)
-                );
+                                .buildDetails(request));
 
                 SecurityContextHolder.getContext()
                         .setAuthentication(authToken);
