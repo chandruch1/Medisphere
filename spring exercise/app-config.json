@@ -1,0 +1,12 @@
+{
+	"command": "java -jar request-0.0.1-SNAPSHOT.jar",
+	"build_path": "target",
+	"stack": "java21",
+	"platform": "javase",
+	"env_variables": {
+		"DB_URL": "jdbc:postgresql://ep-shiny-recipe-at3of3s9-pooler.c-9.us-east-1.aws.neon.tech:5432/todo?sslmode=require",
+		"DB_USERNAME": "neondb_owner",
+		"DB_PASSWORD": "npg_b6RcIFTtN1lg"
+	},
+	"memory": 512
+}
